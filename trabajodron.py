@@ -5,7 +5,7 @@ from scipy.optimize import milp, LinearConstraint, Bounds
 # --- Configuración de la Página ---
 st.set_page_config(page_title="Optimización de Red Wi-Fi - UAVs", layout="wide")
 
-st.title("UAV Wi-Fi Network Optimizer 🛰️📶")
+st.title("Optimizador de red Wi-Fi para UAV 🛰️📶")
 st.markdown("""
 Esta aplicación optimiza el despliegue de drones (UAVs) para dar cobertura Wi-Fi de emergencia 
 utilizando Programación Lineal Entera Mixta (MILP). Ahora puedes modificar tanto las restricciones como los coeficientes técnicos.
