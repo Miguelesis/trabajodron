@@ -63,4 +63,4 @@ if calcular:
     )
 
     # --- Renderizado de Resultados ---
-    st.subheader("📊 Resultados de la Optimización
+    st.subheader("📊 Resultados de la Optimización")
