@@ -63,7 +63,6 @@ if calcular:
     st.subheader("📊 Resultados de la Optimización")
 
     if res.success:
-        # CAMBIO AQUÍ: Ahora solo muestra el texto limpio
         st.success("¡Optimización exitosa!")
         
         # Muestra las métricas principales destacadas
@@ -73,7 +72,13 @@ if calcular:
         with col2:
             # Calcular energía real consumida con el vector solución res.x
             energia_consumida = np.dot(A[0], res.x)
-            st.metric(label="Energía Consumida", value=f"{energia_consumida:.1f} Wh", delta=f"Límite: {energia_max} Wh", delta_color="inverse")
+            st.metric(label="Energía Consumida Total", value=f"{energia_consumida:.1f} Wh", delta=f"Límite: {energia_max} Wh", delta_color="inverse")
+
+        # --- SECCIÓN NUEVA: Estado Visual de la Batería ---
+        st.markdown("### 🔋 Disponibilidad y Uso de la Batería")
+        porcentaje_uso = min(1.0, energia_consumida / energia_max)
+        st.progress(porcentaje_uso)
+        st.caption(f"Se está utilizando el **{porcentaje_uso * 100:.1f}%** de la batería total disponible ({energia_max} Wh). Quedan libres **{energia_max - energia_consumida:.1f} Wh**.")
 
         st.markdown("### 🛸 Configuración Óptima de la Flota:")
         
@@ -85,14 +90,16 @@ if calcular:
         c4.metric("Tipo L (2.4 GHz)", f"{int(res.x[3])} min")
         c5.metric("Drones en Reserva", f"{int(res.x[4])} u")
         
-        # Mostrar el array crudo
-        with st.expander("Ver datos brutos del solver"):
-            st.write("Vector de decisión final `res.x`:", res.x)
-
-    else:
-        st.error(f"No se encontró una solución factible. Estado: {res.message}")
-        st.warning("Prueba a relajar las restricciones (ej. aumentar la energía o disminuir el tráfico mínimo).")
-
-else:
-    # Estado en espera antes de hacer clic en el botón
-    st.info("👈 Modifica los parámetros que necesites en la barra lateral izquierda y haz clic en **¡Optimizar Red!** para ver los resultados.")
+        # --- SECCIÓN NUEVA: Desglose innecesario de energía por dron ---
+        st.markdown("---")
+        with st.expander("⚡ Ver desglose de energía consumida por tipo de dron"):
+            e_p5 = int(res.x[0]) * 2
+            e_p2 = int(res.x[1]) * 2
+            e_l5 = int(res.x[2]) * 1
+            e_l2 = int(res.x[3]) * 1
+            e_res = int(res.x[4]) * 10
+            
+            st.write(f"• **Drones Tipo P en 5 GHz:** {e_p5} Wh (2 Wh/min)")
+            st.write(f"• **Drones Tipo P en 2.4 GHz:** {e_p2} Wh (2 Wh/min)")
+            st.write(f"• **Drones Tipo L en 5 GHz:** {e_l5} Wh (1 Wh/min)")
+            st.write(f"• **Drones Tipo L en 2.4 GHz:** {e_l2} Wh (1
