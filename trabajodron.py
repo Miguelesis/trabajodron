@@ -63,7 +63,8 @@ if calcular:
     st.subheader("📊 Resultados de la Optimización")
 
     if res.success:
-        st.success(f"¡Optimización exitosa! Estado: {res.message}")
+        # CAMBIO AQUÍ: Ahora solo muestra el texto limpio
+        st.success("¡Optimización exitosa!")
         
         # Muestra las métricas principales destacadas
         col1, col2 = st.columns(2)
