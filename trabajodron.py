@@ -20,20 +20,20 @@ trafico_min = st.sidebar.slider("Capacidad de Tráfico Mínima (Mbps)", 100, 800
 espectro_5ghz = st.sidebar.slider("Límite de Tiempo de drones 5 GHz (min)", 10, 300, 100, step=10)
 reserva_min = st.sidebar.number_input("Drones Mínimos en Reserva (u)", min_value=0, max_value=20, value=5)
 
-# --- BLOQUE 2: Coeficientes de Energía ---
+# --- BLOQUE 2: Coeficientes de Energía (Sin tope máximo) ---
 st.sidebar.subheader("⚡ Consumo de Energía (Wh por min)")
-w_p5 = st.sidebar.number_input("Tipo P (5 GHz) [Wh/min]", min_value=1, max_value=10, value=2)
-w_p2 = st.sidebar.number_input("Tipo P (2.4 GHz) [Wh/min]", min_value=1, max_value=10, value=2)
-w_l5 = st.sidebar.number_input("Tipo L (5 GHz) [Wh/min]", min_value=1, max_value=10, value=1)
-w_l2 = st.sidebar.number_input("Tipo L (2.4 GHz) [Wh/min]", min_value=1, max_value=10, value=1)
-w_res = st.sidebar.number_input("Mantenimiento Reserva [Wh fijo]", min_value=1, max_value=50, value=10)
+w_p5 = st.sidebar.number_input("Tipo P (5 GHz) [Wh/min]", min_value=1, value=2)
+w_p2 = st.sidebar.number_input("Tipo P (2.4 GHz) [Wh/min]", min_value=1, value=2)
+w_l5 = st.sidebar.number_input("Tipo L (5 GHz) [Wh/min]", min_value=1, value=1)
+w_l2 = st.sidebar.number_input("Tipo L (2.4 GHz) [Wh/min]", min_value=1, value=1)
+w_res = st.sidebar.number_input("Mantenimiento Reserva [Wh fijo]", min_value=1, value=10)
 
-# --- BLOQUE 3: Coeficientes de Cobertura ---
+# --- BLOQUE 3: Coeficientes de Cobertura (Sin tope máximo) ---
 st.sidebar.subheader("🗺️ Rendimiento de Cobertura (km² por min)")
-c_p5_coef = st.sidebar.number_input("Tipo P (5 GHz) [km²/min]", min_value=1, max_value=10, value=2)
-c_p2_coef = st.sidebar.number_input("Tipo P (2.4 GHz) [km²/min]", min_value=1, max_value=10, value=4)
-c_l5_coef = st.sidebar.number_input("Tipo L (5 GHz) [km²/min]", min_value=1, max_value=10, value=1)
-c_l2_coef = st.sidebar.number_input("Tipo L (2.4 GHz) [km²/min]", min_value=1, max_value=10, value=2)
+c_p5_coef = st.sidebar.number_input("Tipo P (5 GHz) [km²/min]", min_value=1, value=2)
+c_p2_coef = st.sidebar.number_input("Tipo P (2.4 GHz) [km²/min]", min_value=1, value=4)
+c_l5_coef = st.sidebar.number_input("Tipo L (5 GHz) [km²/min]", min_value=1, value=1)
+c_l2_coef = st.sidebar.number_input("Tipo L (2.4 GHz) [km²/min]", min_value=1, value=2)
 
 st.sidebar.markdown("---")
 # --- BOTÓN PARA EJECUTAR LA OPTIMIZACIÓN ---
