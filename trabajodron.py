@@ -29,7 +29,7 @@ w_l2 = st.sidebar.number_input("Tipo L (2.4 GHz) [Wh/min]", min_value=1, value=1
 w_res = st.sidebar.number_input("Mantenimiento Reserva [Wh fijo]", min_value=1, value=10)
 
 # --- BLOQUE 3: Coeficientes de Cobertura (Sin tope máximo) ---
-st.sidebar.subheader("🗺️ Rendimiento de Cobertura (km² por min)")
+st.sidebar.subheader("🗺️ Capacidad de Cobertura del Dron (km² por min)")
 c_p5_coef = st.sidebar.number_input("Tipo P (5 GHz) [km²/min]", min_value=1, value=2)
 c_p2_coef = st.sidebar.number_input("Tipo P (2.4 GHz) [km²/min]", min_value=1, value=4)
 c_l5_coef = st.sidebar.number_input("Tipo L (5 GHz) [km²/min]", min_value=1, value=1)
