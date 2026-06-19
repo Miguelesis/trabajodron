@@ -13,64 +13,64 @@ utilizando Programación Lineal Entera Mixta (MILP). Ahora puedes modificar tant
 
 st.sidebar.header("⚙️ Configuración del Modelo")
 
-# --- BLOQUE 1: Límites Generales ---
+# --- BLOQUE 1: Límites Generales (Valores iniciales en 1 o mínimos funcionales) ---
 st.sidebar.subheader("📋 Límites de la Operación")
-energia_max = st.sidebar.slider("Presupuesto de Energía Máxima (Wh)", 100, 2000, 600, step=50)
-trafico_min = st.sidebar.slider("Capacidad de Tráfico Mínima (Mbps)", 50, 1000, 200, step=50)
-espectro_5ghz = st.sidebar.slider("Límite de Tiempo de drones 5 GHz (min)", 10, 300, 100, step=10)
-reserva_min = st.sidebar.number_input("Drones Mínimos en Reserva (u)", min_value=0, max_value=20, value=5)
+energia_max = st.sidebar.slider("Presupuesto de Energía Máxima (Wh)", 1, 1000, 1, step=1)
+trafico_min = st.sidebar.slider("Capacidad de Tráfico Mínima (Mbps)", 1, 800, 1, step=1)
+espectro_5ghz = st.sidebar.slider("Límite de Tiempo de drones 5 GHz (min)", 1, 300, 1, step=1)
+reserva_min = st.sidebar.number_input("Drones Mínimos en Reserva (u)", min_value=0, max_value=20, value=1)
 
-# --- BLOQUE 2: Coeficientes de Energía ---
+# --- BLOQUE 2: Coeficientes de Energía (Todos iniciados en 1) ---
 st.sidebar.subheader("⚡ Consumo de Energía (Wh por min)")
-w_p5 = st.sidebar.number_input("Tipo P (5 GHz) [Wh/min]", min_value=1, value=4)
-w_p2 = st.sidebar.number_input("Tipo P (2.4 GHz) [Wh/min]", min_value=1, value=3)
-w_l5 = st.sidebar.number_input("Tipo L (5 GHz) [Wh/min]", min_value=1, value=2)
+w_p5 = st.sidebar.number_input("Tipo P (5 GHz) [Wh/min]", min_value=1, value=1)
+w_p2 = st.sidebar.number_input("Tipo P (2.4 GHz) [Wh/min]", min_value=1, value=1)
+w_l5 = st.sidebar.number_input("Tipo L (5 GHz) [Wh/min]", min_value=1, value=1)
 w_l2 = st.sidebar.number_input("Tipo L (2.4 GHz) [Wh/min]", min_value=1, value=1)
-w_res = st.sidebar.number_input("Mantenimiento Reserva [Wh fijo]", min_value=1, value=10)
+w_res = st.sidebar.number_input("Mantenimiento Reserva [Wh fijo]", min_value=1, value=1)
 
-# --- BLOQUE 3: Coeficientes de Cobertura ---
+# --- BLOQUE 3: Coeficientes de Cobertura (Todos iniciados en 1) ---
 st.sidebar.subheader("🗺️ Rendimiento de Cobertura (km² por min)")
-c_p5_coef = st.sidebar.number_input("Tipo P (5 GHz) [km²/min]", min_value=1, value=3)
-c_p2_coef = st.sidebar.number_input("Tipo P (2.4 GHz) [km²/min]", min_value=1, value=5)
-c_l5_coef = st.sidebar.number_input("Tipo L (5 GHz) [km²/min]", min_value=1, value=2)
-c_l2_coef = st.sidebar.number_input("Tipo L (2.4 GHz) [km²/min]", min_value=1, value=3)
+c_p5_coef = st.sidebar.number_input("Tipo P (5 GHz) [km²/min]", min_value=1, value=1)
+c_p2_coef = st.sidebar.number_input("Tipo P (2.4 GHz) [km²/min]", min_value=1, value=1)
+c_l5_coef = st.sidebar.number_input("Tipo L (5 GHz) [km²/min]", min_value=1, value=1)
+c_l2_coef = st.sidebar.number_input("Tipo L (2.4 GHz) [km²/min]", min_value=1, value=1)
 
-# --- BLOQUE 4: Coeficientes de Tráfico (¡NUEVO!) ---
+# --- BLOQUE 4: Coeficientes de Tráfico (Todos iniciados en 1) ---
 st.sidebar.subheader("📊 Rendimiento de Tráfico (Mbps por min)")
-t_p5_coef = st.sidebar.number_input("Tipo P (5 GHz) [Mbps/min]", min_value=1, value=8)
-t_p2_coef = st.sidebar.number_input("Tipo P (2.4 GHz) [Mbps/min]", min_value=1, value=3)
-t_l5_coef = st.sidebar.number_input("Tipo L (5 GHz) [Mbps/min]", min_value=1, value=5)
-t_l2_coef = st.sidebar.number_input("Tipo L (2.4 GHz) [Mbps/min]", min_value=1, value=2)
+t_p5_coef = st.sidebar.number_input("Tipo P (5 GHz) [Mbps/min]", min_value=1, value=1)
+t_p2_coef = st.sidebar.number_input("Tipo P (2.4 GHz) [Mbps/min]", min_value=1, value=1)
+t_l5_coef = st.sidebar.number_input("Tipo L (5 GHz) [Mbps/min]", min_value=1, value=1)
+t_l2_coef = st.sidebar.number_input("Tipo L (2.4 GHz) [Mbps/min]", min_value=1, value=1)
 
 st.sidebar.markdown("---")
 calcular = st.sidebar.button("🚀 ¡Optimizar Red!", use_container_width=True)
 
 if calcular:
-    # 1. Coeficientes de la Función Objetivo (Minimizar el negativo para Maximizar Área)
+    # 1. Coeficientes de la Función Objetivo
     c = np.array([-c_p5_coef, -c_p2_coef, -c_l5_coef, -c_l2_coef, 0])
 
-    # 2. Matrices de Restricciones Dinámicas Actualizada con los coeficientes de tráfico
+    # 2. Matrices de Restricciones Dinámicas
     A = np.array([
-        [w_p5, w_p2, w_l5, w_l2, w_res],       # Energía
-        [t_p5_coef, t_p2_coef, t_l5_coef, t_l2_coef, 0], # Tráfico (Dinámico)
-        [1, 0, 1, 0,  0],                      # Espectro 5 GHz
-        [0, 0, 0, 0,  1]                       # Reserva
+        [w_p5, w_p2, w_l5, w_l2, w_res],       
+        [t_p5_coef, t_p2_coef, t_l5_coef, t_l2_coef, 0], 
+        [1, 0, 1, 0,  0],                      
+        [0, 0, 0, 0,  1]                       
     ])
 
-    # Límites para cada restricción [Mínimo, Máximo]
+    # Límites para cada restricción
     constraints = LinearConstraint(
         A, 
         lb=[-np.inf, trafico_min, -np.inf, reserva_min], 
         ub=[energia_max, np.inf, espectro_5ghz, np.inf]
     )
 
-    # 3. Límites de las variables (todas >= 0)
+    # 3. Límites de las variables
     bounds = Bounds(lb=0, ub=np.inf)
 
-    # 4. Integridad (Todas las variables deben ser enteras)
+    # 4. Integridad
     integrality = np.array([1, 1, 1, 1, 1])
 
-    # Ejecución de la Optimización
+    # Ejecución
     res = milp(c=c, constraints=constraints, bounds=bounds, integrality=integrality)
 
     # --- Renderizado de Resultados ---
@@ -91,7 +91,7 @@ if calcular:
 
         # --- Estado Visual de la Batería ---
         st.markdown("### 🔋 Disponibilidad y Uso de la Batería")
-        porcentaje_uso = min(1.0, energia_consumida / energia_max)
+        porcentaje_uso = min(1.0, energia_consumida / energia_max) if energia_max > 0 else 0.0
         st.progress(porcentaje_uso)
         st.caption(f"Se está utilizando el **{porcentaje_uso * 100:.1f}%** de la batería disponible ({energia_max} Wh). Libres: **{energia_max - energia_consumida:.1f} Wh**.")
 
@@ -103,7 +103,7 @@ if calcular:
         c4.metric("Tipo L (2.4 GHz)", f"{int(res.x[3])} min")
         c5.metric("Drones en Reserva", f"{int(res.x[4])} u")
         
-        # --- Desgloses en Expanders ---
+        # --- Expanders ---
         st.markdown("---")
         with st.expander("⚡ Ver desglose de energía consumida por tipo de dron"):
             e_p5 = int(res.x[0]) * w_p5
