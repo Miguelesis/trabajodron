@@ -147,4 +147,19 @@ if calcular:
                 ).add_to(m)
 
                 # Renderizar en Streamlit
-                st_folium(
+                st_folium(m, width=900, height=500)
+            else:
+                st.warning("El área optimizada es 0 km². Modifica los valores para generar cobertura visible.")
+
+        # --- Desgloses Técnicos ---
+        with st.expander("⚡ Ver desglose de energía consumida por tipo de dron"):
+            st.write(f"• **Tipo P en 5 GHz:** {int(res.x[0]) * w_p5} Wh")
+            st.write(f"• **Tipo P en 2.4 GHz:** {int(res.x[1]) * w_p2} Wh")
+            st.write(f"• **Tipo L en 5 GHz:** {int(res.x[2]) * w_l5} Wh")
+            st.write(f"• **Tipo L en 2.4 GHz:** {int(res.x[3]) * w_l2} Wh")
+            st.write(f"• **Reserva en Tierra:** {int(res.x[4]) * w_res} Wh")
+
+    else:
+        st.error(f"No se encontró una solución factible. Estado: {res.message}")
+else:
+    st.info("👈 Modifica los parámetros y restricciones que necesites en la barra lateral izquierda y haz clic en **¡Optimizar Red!** para calcular.")
