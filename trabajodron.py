@@ -102,4 +102,6 @@ if calcular:
             st.write(f"• **Drones Tipo P en 5 GHz:** {e_p5} Wh (2 Wh/min)")
             st.write(f"• **Drones Tipo P en 2.4 GHz:** {e_p2} Wh (2 Wh/min)")
             st.write(f"• **Drones Tipo L en 5 GHz:** {e_l5} Wh (1 Wh/min)")
-            st.write(f"• **Drones Tipo L en 2.4 GHz:** {e_l2} Wh (1
+            st.write(f"• **Drones Tipo L en 2.4 GHz:** {e_l2} Wh (1 Wh/min)")
+            st.write(f"• **Drones en Reserva (Tierra):** {e_res} Wh (10 Wh fijo)")
+            st.write(f"**Suma total:** {e_p5 + e_p2 + e_l5 + e_l2 + e_res} Wh")
