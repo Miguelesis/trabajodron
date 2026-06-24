@@ -109,4 +109,81 @@ if calcular:
             st.metric(label="Área de Cobertura Maximizada", value=f"{area_total:.1f} km²")
         with col2:
             energia_consumida = np.dot(A[0], res.x)
-            st
+            st.metric(label="Energía Consumida Total", value=f"{energia_consumida:.1f} Wh", delta=f"Límite: {energia_max} Wh", delta_color="inverse")
+        with col3:
+            trafico_generado = np.dot(A[1], res.x)
+            st.metric(label="Capacidad de Tráfico Lograda", value=f"{trafico_generado:.1f} Mbps", delta=f"Mínimo: {trafico_min} Mbps")
+
+        st.markdown("### 🔋 Disponibilidad y Uso de la Batería")
+        porcentaje_uso = min(1.0, energia_consumida / energia_max) if energia_max > 0 else 0.0
+        st.progress(porcentaje_uso)
+        st.caption(f"Se está utilizando el **{porcentaje_uso * 100:.1f}%** de la batería disponible ({energia_max} Wh). Libres: **{energia_max - energia_consumida:.1f} Wh**.")
+        
+        st.markdown("### 🛸 Configuración Óptima de la Flota:")
+        c1, c2, c3, c4, c5 = st.columns(5)
+        c1.metric("Tipo P (5 GHz)", f"{int(res.x[0])} min")
+        c2.metric("Tipo P (2.4 GHz)", f"{int(res.x[1])} min")
+        c3.metric("Tipo L (5 GHz)", f"{int(res.x[2])} min")
+        c4.metric("Tipo L (2.4 GHz)", f"{int(res.x[3])} min")
+        c5.metric("Drones en Reserva", f"{int(res.x[4])} u")
+
+        # --- VISUALIZACIÓN GEOGRÁFICA EN BUENOS AIRES ---
+        st.markdown("---")
+        st.markdown("### 🌍 Visualización Geográfica Georreferenciada")
+        
+        if area_total > 0:
+            radio_metros = math.sqrt(area_total / math.pi) * 1000
+
+            # Coordenadas por defecto: Obelisco, Buenos Aires, Argentina
+            lat, lon = -34.603722, -58.381592 
+            
+            st.info(f"Visualizando un radio estimado de cobertura de **{radio_metros:.1f} metros** alrededor del punto central de Buenos Aires.")
+
+            m = folium.Map(location=[lat, lon], zoom_start=13, control_scale=True)
+            
+            folium.Circle(
+                location=[lat, lon],
+                radius=radio_metros,
+                color="#1E88E5",
+                fill=True,
+                fill_color="#1E88E5",
+                fill_opacity=0.3,
+                popup=f"Zona de Cobertura Total: {area_total:.2f} km²"
+            ).add_to(m)
+            
+            folium.Marker(
+                [lat, lon], 
+                popup="Centro de Control de UAVs (CABA)",
+                icon=folium.Icon(color="red", icon="plane", prefix="fa")
+            ).add_to(m)
+
+            st_folium(m, width=900, height=500, returned_objects=[])
+        else:
+            st.warning("El área optimizada es 0 km². Modifica los valores para generar cobertura visible.")
+
+        # --- Desgloses Técnicos ---
+        st.markdown("---")
+        with st.expander("⚡ Ver desglose de energía consumida por tipo de dron"):
+            st.write(f"• **Tipo P en 5 GHz:** {int(res.x[0]) * w_p5} Wh")
+            st.write(f"• **Tipo P en 2.4 GHz:** {int(res.x[1]) * w_p2} Wh")
+            st.write(f"• **Tipo L en 5 GHz:** {int(res.x[2]) * w_l5} Wh")
+            st.write(f"• **Tipo L en 2.4 GHz:** {int(res.x[3]) * w_l2} Wh")
+            st.write(f"• **Reserva en Tierra:** {int(res.x[4]) * w_res} Wh")
+            st.write(f"**Suma total:** {int(res.x[0])*w_p5 + int(res.x[1])*w_p2 + int(res.x[2])*w_l5 + int(res.x[3])*w_l2 + int(res.x[4])*w_res} Wh")
+
+        with st.expander("📊 Ver desglose de tráfico aportado"):
+            st.write(f"• **Tipo P en 5 GHz:** {int(res.x[0]) * t_p5_coef} Mbps")
+            st.write(f"• **Tipo P en 2.4 GHz:** {int(res.x[1]) * t_p2_coef} Mbps")
+            st.write(f"• **Tipo L en 5 GHz:** {int(res.x[2]) * t_l5_coef} Mbps")
+            st.write(f"• **Tipo L en 2.4 GHz:** {int(res.x[3]) * t_l2_coef} Mbps")
+            st.write(f"**Tráfico Total:** {int(res.x[0])*t_p5_coef + int(res.x[1])*t_p2_coef + int(res.x[2])*t_l5_coef + int(res.x[3])*t_l2_coef} Mbps")
+
+        with st.expander("Ver datos brutos del solver"):
+            st.write("Vector de decisión final `res.x`:", res.x)
+
+    else:
+        st.error(f"No se encontró una solución factible. Estado: {res.message}")
+        st.warning("Prueba a relajar las restricciones (ej. aumentar la energía, bajar los consumos o disminuir el tráfico mínimo).")
+
+else:
+    st.info("👆 Modifica los parámetros en las pestañas de arriba y haz clic en **¡Optimizar Red!** para calcular.")
