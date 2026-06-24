@@ -14,39 +14,66 @@ Esta aplicación optimiza el despliegue de drones (UAVs) para dar cobertura Wi-F
 utilizando Programación Lineal Entera Mixta (MILP). Ahora puedes simular el impacto geográfico real.
 """)
 
-st.sidebar.header("⚙️ Configuración del Modelo")
+st.markdown("---")
+st.header("⚙️ Configuración del Modelo")
 
-# --- BLOQUE 1: Límites Generales (Valores iniciales en 1 o mínimos funcionales) ---
-st.sidebar.subheader("📋 Límites de la Operación")
-energia_max = st.sidebar.slider("Presupuesto de Energía Máxima (Wh)", 1, 1000, 1, step=1)
-trafico_min = st.sidebar.slider("Capacidad de Tráfico Mínima (Mbps)", 1, 800, 1, step=1)
-espectro_5ghz = st.sidebar.slider("Límite de Tiempo de drones 5 GHz (min)", 1, 300, 1, step=1)
-reserva_min = st.sidebar.number_input("Drones Mínimos en Reserva (u)", min_value=0, max_value=20, value=1)
+# --- ORGANIZACIÓN EN PESTAÑAS EN EL CUERPO PRINCIPAL ---
+tab1, tab2, tab3, tab4 = st.tabs([
+    "📋 Límites de la Operación", 
+    "⚡ Consumo de Energía", 
+    "🗺️ Rendimiento de Cobertura", 
+    "📊 Rendimiento de Tráfico"
+])
 
-# --- BLOQUE 2: Coeficientes de Energía (Todos iniciados en 1) ---
-st.sidebar.subheader("⚡ Consumo de Energía (Wh por min)")
-w_p5 = st.sidebar.number_input("Tipo P (5 GHz) [Wh/min]", min_value=1, value=1)
-w_p2 = st.sidebar.number_input("Tipo P (2.4 GHz) [Wh/min]", min_value=1, value=1)
-w_l5 = st.sidebar.number_input("Tipo L (5 GHz) [Wh/min]", min_value=1, value=1)
-w_l2 = st.sidebar.number_input("Tipo L (2.4 GHz) [Wh/min]", min_value=1, value=1)
-w_res = st.sidebar.number_input("Mantenimiento Reserva [Wh fijo]", min_value=1, value=1)
+# --- BLOQUE 1: Límites Generales ---
+with tab1:
+    col_l1, col_l2 = st.columns(2)
+    with col_l1:
+        energia_max = st.slider("Presupuesto de Energía Máxima (Wh)", 1, 1000, 1, step=1)
+        trafico_min = st.slider("Capacidad de Tráfico Mínima (Mbps)", 1, 800, 1, step=1)
+    with col_l2:
+        espectro_5ghz = st.slider("Límite de Tiempo de drones 5 GHz (min)", 1, 300, 1, step=1)
+        reserva_min = st.number_input("Drones Mínimos en Reserva (u)", min_value=0, max_value=20, value=1)
 
-# --- BLOQUE 3: Coeficientes de Cobertura (Todos iniciados en 1) ---
-st.sidebar.subheader("🗺️ Rendimiento de Cobertura (km² por min)")
-c_p5_coef = st.sidebar.number_input("Tipo P (5 GHz) [km²/min]", min_value=1, value=1)
-c_p2_coef = st.sidebar.number_input("Tipo P (2.4 GHz) [km²/min]", min_value=1, value=1)
-c_l5_coef = st.sidebar.number_input("Tipo L (5 GHz) [km²/min]", min_value=1, value=1)
-c_l2_coef = st.sidebar.number_input("Tipo L (2.4 GHz) [km²/min]", min_value=1, value=1)
+# --- BLOQUE 2: Coeficientes de Energía ---
+with tab2:
+    st.markdown("##### Consumo por minuto (Wh por min) y mantenimiento fijo")
+    col_e1, col_e2, col_e3 = st.columns(3)
+    with col_e1:
+        w_p5 = st.number_input("Tipo P (5 GHz) [Wh/min]", min_value=1, value=1)
+        w_p2 = st.number_input("Tipo P (2.4 GHz) [Wh/min]", min_value=1, value=1)
+    with col_e2:
+        w_l5 = st.number_input("Tipo L (5 GHz) [Wh/min]", min_value=1, value=1)
+        w_l2 = st.number_input("Tipo L (2.4 GHz) [Wh/min]", min_value=1, value=1)
+    with col_e3:
+        w_res = st.number_input("Mantenimiento Reserva [Wh fijo]", min_value=1, value=1)
 
-# --- BLOQUE 4: Coeficientes de Tráfico (Todos iniciados en 1) ---
-st.sidebar.subheader("📊 Rendimiento de Tráfico (Mbps por min)")
-t_p5_coef = st.sidebar.number_input("Tipo P (5 GHz) [Mbps/min]", min_value=1, value=1)
-t_p2_coef = st.sidebar.number_input("Tipo P (2.4 GHz) [Mbps/min]", min_value=1, value=1)
-t_l5_coef = st.sidebar.number_input("Tipo L (5 GHz) [Mbps/min]", min_value=1, value=1)
-t_l2_coef = st.sidebar.number_input("Tipo L (2.4 GHz) [Mbps/min]", min_value=1, value=1)
+# --- BLOQUE 3: Coeficientes de Cobertura ---
+with tab3:
+    st.markdown("##### Rendimiento de Cobertura (km² por min)")
+    col_c1, col_c2 = st.columns(2)
+    with col_c1:
+        c_p5_coef = st.number_input("Tipo P (5 GHz) [km²/min]", min_value=1, value=1)
+        c_p2_coef = st.number_input("Tipo P (2.4 GHz) [km²/min]", min_value=1, value=1)
+    with col_c2:
+        c_l5_coef = st.number_input("Tipo L (5 GHz) [km²/min]", min_value=1, value=1)
+        c_l2_coef = st.number_input("Tipo L (2.4 GHz) [km²/min]", min_value=1, value=1)
 
-st.sidebar.markdown("---")
-calcular = st.sidebar.button("🚀 ¡Optimizar Red!", use_container_width=True)
+# --- BLOQUE 4: Coeficientes de Tráfico ---
+with tab4:
+    st.markdown("##### Rendimiento de Tráfico (Mbps por min)")
+    col_t1, col_t2 = st.columns(2)
+    with col_t1:
+        t_p5_coef = st.number_input("Tipo P (5 GHz) [Mbps/min]", min_value=1, value=1)
+        t_p2_coef = st.number_input("Tipo P (2.4 GHz) [Mbps/min]", min_value=1, value=1)
+    with col_t2:
+        t_l5_coef = st.number_input("Tipo L (5 GHz) [Mbps/min]", min_value=1, value=1)
+        t_l2_coef = st.number_input("Tipo L (2.4 GHz) [Mbps/min]", min_value=1, value=1)
+
+st.markdown("---")
+
+# Botón principal destacado abajo de los parámetros
+calcular = st.button("🚀 ¡Optimizar Red!", use_container_width=True, type="primary")
 
 if calcular:
     # 1. Coeficientes de la Función Objetivo
@@ -104,51 +131,44 @@ if calcular:
         c4.metric("Tipo L (2.4 GHz)", f"{int(res.x[3])} min")
         c5.metric("Drones en Reserva", f"{int(res.x[4])} u")
 
-        # --- BOTÓN INTERACTIVO PARA EL MAPA ---
+        # --- VISUALIZACIÓN GEOGRÁFICA AUTOMÁTICA ---
         st.markdown("---")
         st.markdown("### 🌍 Visualización Geográfica Georreferenciada")
         
-        if "ver_mapa" not in st.session_state:
-            st.session_state.ver_mapa = False
+        if area_total > 0:
+            # Calcular el radio equivalente en metros a partir de los km² logrados
+            radio_metros = math.sqrt(area_total / math.pi) * 1000
 
-        if st.button("🗺️ Mostrar / Ocultar Mapa de Cobertura", use_container_width=True):
-            st.session_state.ver_mapa = not st.session_state.ver_mapa
+            # Coordenadas por defecto (Ej: Madrid, España)
+            lat, lon = 40.416775, -3.703790 
+            
+            st.info(f"Visualizando un radio estimado de cobertura de **{radio_metros:.1f} metros** a la redonda.")
 
-        if st.session_state.ver_mapa:
-            if area_total > 0:
-                # Calcular el radio equivalente en metros a partir de los km² logrados
-                radio_metros = math.sqrt(area_total / math.pi) * 1000
+            # Crear el mapa base de folium
+            m = folium.Map(location=[lat, lon], zoom_start=14, control_scale=True)
+            
+            # Dibujar el círculo de cobertura
+            folium.Circle(
+                location=[lat, lon],
+                radius=radio_metros,
+                color="#1E88E5",
+                fill=True,
+                fill_color="#1E88E5",
+                fill_opacity=0.3,
+                popup=f"Zona de Cobertura Total: {area_total:.2f} km²"
+            ).add_to(m)
+            
+            # Añadir un marcador al centro de mando
+            folium.Marker(
+                [lat, lon], 
+                popup="Centro de Control de UAVs",
+                icon=folium.Icon(color="red", icon="plane", prefix="fa")
+            ).add_to(m)
 
-                # Coordenadas por defecto (Ej: Madrid, España)
-                lat, lon = 40.416775, -3.703790 
-                
-                st.info(f"Visualizando un radio estimado de cobertura de **{radio_metros:.1f} metros** a la redonda.")
-
-                # Crear el mapa base de folium
-                m = folium.Map(location=[lat, lon], zoom_start=14, control_scale=True)
-                
-                # Dibujar el círculo de cobertura
-                folium.Circle(
-                    location=[lat, lon],
-                    radius=radio_metros,
-                    color="#1E88E5",
-                    fill=True,
-                    fill_color="#1E88E5",
-                    fill_opacity=0.3,
-                    popup=f"Zona de Cobertura Total: {area_total:.2f} km²"
-                ).add_to(m)
-                
-                # Añadir un marcador al centro de mando
-                folium.Marker(
-                    [lat, lon], 
-                    popup="Centro de Control de UAVs",
-                    icon=folium.Icon(color="red", icon="plane", prefix="fa")
-                ).add_to(m)
-
-                # Renderizar en Streamlit
-                st_folium(m, width=900, height=500)
-            else:
-                st.warning("El área optimizada es 0 km². Modifica los valores para generar cobertura visible.")
+            # Renderizar automáticamente en Streamlit sin clics previos
+            st_folium(m, width=900, height=500)
+        else:
+            st.warning("El área optimizada es 0 km². Modifica los valores para generar cobertura visible.")
 
         # --- Desgloses Técnicos ---
         st.markdown("---")
@@ -175,4 +195,4 @@ if calcular:
         st.warning("Prueba a relajar las restricciones (ej. aumentar la energía, bajar los consumos o disminuir el tráfico mínimo).")
 
 else:
-    st.info("👈 Modifica los parámetros y restricciones que necesites en la barra lateral izquierda y haz clic en **¡Optimizar Red!** para calcular.")
+    st.info("👈 Modifica los parámetros en las pestañas de arriba y haz clic en **¡Optimizar Red!** para calcular.")
