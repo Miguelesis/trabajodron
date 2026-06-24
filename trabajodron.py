@@ -25,50 +25,50 @@ tab1, tab2, tab3, tab4 = st.tabs([
     "📊 Rendimiento de Tráfico"
 ])
 
-# --- BLOQUE 1: Límites Generales ---
+# --- BLOQUE 1: Límites Generales (Valores iniciales realistas para evitar fallos) ---
 with tab1:
     col_l1, col_l2 = st.columns(2)
     with col_l1:
-        energia_max = st.slider("Presupuesto de Energía Máxima (Wh)", 1, 1000, 1, step=1)
-        trafico_min = st.slider("Capacidad de Tráfico Mínima (Mbps)", 1, 800, 1, step=1)
+        energia_max = st.slider("Presupuesto de Energía Máxima (Wh)", 10, 1000, 500, step=10)
+        trafico_min = st.slider("Capacidad de Tráfico Mínima (Mbps)", 1, 800, 50, step=5)
     with col_l2:
-        espectro_5ghz = st.slider("Límite de Tiempo de drones 5 GHz (min)", 1, 300, 1, step=1)
+        espectro_5ghz = st.slider("Límite de Tiempo de drones 5 GHz (min)", 1, 300, 120, step=5)
         reserva_min = st.number_input("Drones Mínimos en Reserva (u)", min_value=0, max_value=20, value=1)
 
-# --- BLOQUE 2: Coeficientes de Energía ---
+# --- BLOQUE 2: Coeficientes de Energía (Valores funcionales) ---
 with tab2:
     st.markdown("##### Consumo por minuto (Wh por min) y mantenimiento fijo")
     col_e1, col_e2, col_e3 = st.columns(3)
     with col_e1:
-        w_p5 = st.number_input("Tipo P (5 GHz) [Wh/min]", min_value=1, value=1)
-        w_p2 = st.number_input("Tipo P (2.4 GHz) [Wh/min]", min_value=1, value=1)
+        w_p5 = st.number_input("Tipo P (5 GHz) [Wh/min]", min_value=1, value=5)
+        w_p2 = st.number_input("Tipo P (2.4 GHz) [Wh/min]", min_value=1, value=3)
     with col_e2:
-        w_l5 = st.number_input("Tipo L (5 GHz) [Wh/min]", min_value=1, value=1)
-        w_l2 = st.number_input("Tipo L (2.4 GHz) [Wh/min]", min_value=1, value=1)
+        w_l5 = st.number_input("Tipo L (5 GHz) [Wh/min]", min_value=1, value=6)
+        w_l2 = st.number_input("Tipo L (2.4 GHz) [Wh/min]", min_value=1, value=4)
     with col_e3:
-        w_res = st.number_input("Mantenimiento Reserva [Wh fijo]", min_value=1, value=1)
+        w_res = st.number_input("Mantenimiento Reserva [Wh fijo]", min_value=1, value=10)
 
 # --- BLOQUE 3: Coeficientes de Cobertura ---
 with tab3:
     st.markdown("##### Rendimiento de Cobertura (km² por min)")
     col_c1, col_c2 = st.columns(2)
     with col_c1:
-        c_p5_coef = st.number_input("Tipo P (5 GHz) [km²/min]", min_value=1, value=1)
-        c_p2_coef = st.number_input("Tipo P (2.4 GHz) [km²/min]", min_value=1, value=1)
+        c_p5_coef = st.number_input("Tipo P (5 GHz) [km²/min]", min_value=1, value=2)
+        c_p2_coef = st.number_input("Tipo P (2.4 GHz) [km²/min]", min_value=1, value=4)
     with col_c2:
-        c_l5_coef = st.number_input("Tipo L (5 GHz) [km²/min]", min_value=1, value=1)
-        c_l2_coef = st.number_input("Tipo L (2.4 GHz) [km²/min]", min_value=1, value=1)
+        c_l5_coef = st.number_input("Tipo L (5 GHz) [km²/min]", min_value=1, value=3)
+        c_l2_coef = st.number_input("Tipo L (2.4 GHz) [km²/min]", min_value=1, value=5)
 
 # --- BLOQUE 4: Coeficientes de Tráfico ---
 with tab4:
     st.markdown("##### Rendimiento de Tráfico (Mbps por min)")
     col_t1, col_t2 = st.columns(2)
     with col_t1:
-        t_p5_coef = st.number_input("Tipo P (5 GHz) [Mbps/min]", min_value=1, value=1)
-        t_p2_coef = st.number_input("Tipo P (2.4 GHz) [Mbps/min]", min_value=1, value=1)
+        t_p5_coef = st.number_input("Tipo P (5 GHz) [Mbps/min]", min_value=1, value=15)
+        t_p2_coef = st.number_input("Tipo P (2.4 GHz) [Mbps/min]", min_value=1, value=10)
     with col_t2:
-        t_l5_coef = st.number_input("Tipo L (5 GHz) [Mbps/min]", min_value=1, value=1)
-        t_l2_coef = st.number_input("Tipo L (2.4 GHz) [Mbps/min]", min_value=1, value=1)
+        t_l5_coef = st.number_input("Tipo L (5 GHz) [Mbps/min]", min_value=1, value=20)
+        t_l2_coef = st.number_input("Tipo L (2.4 GHz) [Mbps/min]", min_value=1, value=12)
 
 st.markdown("---")
 
@@ -101,7 +101,7 @@ if calcular:
 
     st.subheader("📊 Resultados de la Optimización")
 
-    if res.success:
+    if res.success and res.x is not None:
         st.success("¡Optimización exitosa!")
         
         area_total = -res.fun
@@ -195,4 +195,4 @@ if calcular:
         st.warning("Prueba a relajar las restricciones (ej. aumentar la energía, bajar los consumos o disminuir el tráfico mínimo).")
 
 else:
-    st.info("👈 Modifica los parámetros en las pestañas de arriba y haz clic en **¡Optimizar Red!** para calcular.")
+    st.info("👆 Modifica los parámetros en las pestañas de arriba y haz clic en **¡Optimizar Red!** para calcular.")
