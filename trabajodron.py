@@ -25,7 +25,7 @@ tab1, tab2, tab3, tab4 = st.tabs([
     "📊 Rendimiento de Tráfico"
 ])
 
-# --- BLOQUE 1: Límites Generales (Valores iniciales realistas para evitar fallos) ---
+# --- BLOQUE 1: Límites Generales ---
 with tab1:
     col_l1, col_l2 = st.columns(2)
     with col_l1:
@@ -35,7 +35,7 @@ with tab1:
         espectro_5ghz = st.slider("Límite de Tiempo de drones 5 GHz (min)", 1, 300, 120, step=5)
         reserva_min = st.number_input("Drones Mínimos en Reserva (u)", min_value=0, max_value=20, value=1)
 
-# --- BLOQUE 2: Coeficientes de Energía (Valores funcionales) ---
+# --- BLOQUE 2: Coeficientes de Energía ---
 with tab2:
     st.markdown("##### Consumo por minuto (Wh por min) y mantenimiento fijo")
     col_e1, col_e2, col_e3 = st.columns(3)
@@ -165,8 +165,8 @@ if calcular:
                 icon=folium.Icon(color="red", icon="plane", prefix="fa")
             ).add_to(m)
 
-            # Renderizar automáticamente en Streamlit sin clics previos
-            st_folium(m, width=900, height=500)
+            # CRUCIAL: returned_objects=[] evita que el mapa recargue la página al procesarse
+            st_folium(m, width=900, height=500, returned_objects=[])
         else:
             st.warning("El área optimizada es 0 km². Modifica los valores para generar cobertura visible.")
 
